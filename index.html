@@ -1,121 +1,177 @@
 <!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Delete Account</title>
-    <style>
-      body { font-family: Arial, sans-serif; max-width: 520px; margin: 40px auto; padding: 0 16px; }
-      input, button { width: 100%; padding: 12px; margin: 8px 0; }
-      button { cursor: pointer; }
-      .danger { background: #b00020; color: white; border: 0; }
-      .muted { color: #666; font-size: 14px; }
-      .box { border: 1px solid #ddd; padding: 16px; border-radius: 10px; }
-    </style>
-  </head>
-  <body>
-    <h2>Delete your account</h2>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Delete Account</title>
 
-    <div class="box" id="signedOutBox">
-      <p class="muted">Sign in to delete your account.</p>
-      <input id="email" type="email" placeholder="Email" />
-      <input id="password" type="password" placeholder="Password" />
-      <button id="signInBtn">Sign In</button>
-      <p id="msg" class="muted"></p>
-    </div>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 520px;
+      margin: 40px auto;
+      padding: 0 16px;
+      background: #ffffff;
+    }
 
-    <div class="box" id="signedInBox" style="display:none;">
-      <p id="who" class="muted"></p>
-      <p><b>Warning:</b> This permanently deletes your account and data.</p>
+    img {
+      display: block;
+      margin: 0 auto 30px;
+      max-width: 220px;
+    }
 
-      <label class="muted">
-        Type <b>DELETE</b> to confirm:
-      </label>
-      <input id="confirmText" placeholder="DELETE" />
+    h2 {
+      text-align: center;
+    }
 
-      <button class="danger" id="deleteBtn" disabled>Delete My Account</button>
-      <button id="signOutBtn">Sign Out</button>
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      font-size: 15px;
+    }
 
-      <p id="msg2" class="muted"></p>
-    </div>
+    button {
+      cursor: pointer;
+    }
 
-    <script type="module">
-      import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+    .box {
+      border: 1px solid #ddd;
+      padding: 16px;
+      border-radius: 10px;
+    }
 
-      // TODO: put your project values here (safe to expose)
-      const SUPABASE_URL = "https://mvmvqycvorstsftcldzs.supabase.co";
-      const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12bXZxeWN2b3JzdHNmdGNsZHpzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUwMDczNTQsImV4cCI6MjA3MDU4MzM1NH0.gA744wsXronSyRXHCS60DVcVqJ3_y0MgkqEhLsFxYDI";
+    .muted {
+      color: #666;
+      font-size: 14px;
+    }
 
-      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    .danger {
+      background: #b00020;
+      color: #fff;
+      border: none;
+    }
 
-      const signedOutBox = document.getElementById("signedOutBox");
-      const signedInBox  = document.getElementById("signedInBox");
-      const msg = document.getElementById("msg");
-      const msg2 = document.getElementById("msg2");
+    .google {
+      background: #ffffff;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
 
-      const signInBtn = document.getElementById("signInBtn");
-      const signOutBtn = document.getElementById("signOutBtn");
-      const deleteBtn = document.getElementById("deleteBtn");
-      const confirmText = document.getElementById("confirmText");
+<body>
 
-      function setSignedInUI(user) {
-        if (user) {
-          signedOutBox.style.display = "none";
-          signedInBox.style.display = "block";
-          document.getElementById("who").textContent = `Signed in as: ${user.email}`;
-        } else {
-          signedInBox.style.display = "none";
-          signedOutBox.style.display = "block";
-        }
+  <!-- LOGO (from same GitHub folder) -->
+  <img src="hbot-logo.png" alt="App Logo">
+
+  <h2>Delete Your Account</h2>
+
+  <!-- SIGNED OUT -->
+  <div class="box" id="signedOutBox">
+    <p class="muted">Sign in to delete your account.</p>
+
+    <input id="email" type="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+
+    <button id="signInBtn">Sign In</button>
+
+    <button class="google" id="googleBtn">Sign in with Google</button>
+
+    <p id="msg" class="muted"></p>
+  </div>
+
+  <!-- SIGNED IN -->
+  <div class="box" id="signedInBox" style="display:none;">
+    <p id="who" class="muted"></p>
+
+    <p><strong>Warning:</strong> This permanently deletes your account and all data.</p>
+
+    <label class="muted">Type <strong>DELETE</strong> to confirm:</label>
+    <input id="confirmText" placeholder="DELETE">
+
+    <button class="danger" id="deleteBtn" disabled>Delete My Account</button>
+    <button id="signOutBtn">Sign Out</button>
+
+    <p id="msg2" class="muted"></p>
+  </div>
+
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+    // 🔴 REPLACE THESE
+    const SUPABASE_URL = "https://mvmvqycvorstsftcldzs.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12bXZxeWN2b3JzdHNmdGNsZHpzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUwMDczNTQsImV4cCI6MjA3MDU4MzM1NH0.gA744wsXronSyRXHCS60DVcVqJ3_y0MgkqEhLsFxYDI";
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const signedOutBox = document.getElementById("signedOutBox");
+    const signedInBox = document.getElementById("signedInBox");
+    const msg = document.getElementById("msg");
+    const msg2 = document.getElementById("msg2");
+
+    const signInBtn = document.getElementById("signInBtn");
+    const googleBtn = document.getElementById("googleBtn");
+    const signOutBtn = document.getElementById("signOutBtn");
+    const deleteBtn = document.getElementById("deleteBtn");
+    const confirmText = document.getElementById("confirmText");
+
+    function setUI(user) {
+      if (user) {
+        signedOutBox.style.display = "none";
+        signedInBox.style.display = "block";
+        document.getElementById("who").textContent = `Signed in as ${user.email}`;
+      } else {
+        signedInBox.style.display = "none";
+        signedOutBox.style.display = "block";
+      }
+    }
+
+    confirmText.addEventListener("input", () => {
+      deleteBtn.disabled = confirmText.value.trim() !== "DELETE";
+    });
+
+    signInBtn.onclick = async () => {
+      msg.textContent = "";
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) msg.textContent = error.message;
+      else setUI(data.user);
+    };
+
+    googleBtn.onclick = async () => {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: window.location.href }
+      });
+      if (error) msg.textContent = error.message;
+    };
+
+    signOutBtn.onclick = async () => {
+      await supabase.auth.signOut();
+      setUI(null);
+    };
+
+    deleteBtn.onclick = async () => {
+      msg2.textContent = "";
+
+      if (!confirm("This action is permanent. Continue?")) return;
+
+      const { error } = await supabase.rpc("delete_user_account");
+      if (error) {
+        msg2.textContent = error.message;
+        return;
       }
 
-      // Enable delete only when user types DELETE
-      confirmText.addEventListener("input", () => {
-        deleteBtn.disabled = (confirmText.value.trim() !== "DELETE");
-      });
+      await supabase.auth.signOut();
+      msg2.textContent = "Your account has been permanently deleted.";
+      setUI(null);
+    };
 
-      signInBtn.addEventListener("click", async () => {
-        msg.textContent = "";
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value;
+    const { data: { session } } = await supabase.auth.getSession();
+    setUI(session?.user ?? null);
+  </script>
 
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) {
-          msg.textContent = error.message;
-          return;
-        }
-        setSignedInUI(data.user);
-      });
-
-      signOutBtn.addEventListener("click", async () => {
-        await supabase.auth.signOut();
-        setSignedInUI(null);
-      });
-
-      deleteBtn.addEventListener("click", async () => {
-        msg2.textContent = "";
-
-        // Extra confirmation (browser-native)
-        const ok = confirm("This will permanently delete your account. Continue?");
-        if (!ok) return;
-
-        // Call your SQL function via RPC
-        const { error } = await supabase.rpc("delete_user_account"); // docs: rpc() :contentReference[oaicite:0]{index=0}
-        if (error) {
-          msg2.textContent = `Delete failed: ${error.message}`;
-          return;
-        }
-
-        // Session may still exist in browser storage; clear it.
-        await supabase.auth.signOut();
-
-        msg2.textContent = "Your account has been deleted.";
-        setSignedInUI(null);
-      });
-
-      // On load: check if already signed in
-      const { data: { session } } = await supabase.auth.getSession();
-      setSignedInUI(session?.user ?? null);
-    </script>
-  </body>
+</body>
 </html>
